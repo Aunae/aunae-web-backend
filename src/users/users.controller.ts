@@ -5,6 +5,7 @@ import {
   Get,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -31,7 +32,7 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Patch()
+  @Put()
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   updateUser(@Body() updateUserDto: UpdateUserDto, @Req() req) {
