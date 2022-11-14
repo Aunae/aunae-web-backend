@@ -4,17 +4,18 @@ import {
     DeleteDateColumn,
     Entity,
     PrimaryGeneratedColumn,
+    ManyToOne,
     Unique,
     UpdateDateColumn,
   } from 'typeorm';
+  import {User} from './user.entities'
+  @Entity()
   
-  @Entity({ name: 'user' })
-  @Unique(['username'])
-  export class User {
+  export class Board {
     @PrimaryGeneratedColumn('uuid')
     id: string;
     
-    @Column()
+    @ManyToOne(()=>User,(user)=>user.boards)
     author: string;
 
     @Column()
