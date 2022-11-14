@@ -34,4 +34,8 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Jwt secret key
+./src/constants.ts
+
+# Local env files
 .env.dev
