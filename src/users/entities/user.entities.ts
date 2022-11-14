@@ -1,7 +1,14 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
-
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+  OneToMany,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Board } from './board.entities';
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
 export class User {
@@ -9,6 +16,9 @@ export class User {
   @IsString()
   @ApiProperty({ description: 'id' })
   id: string;
+
+  @OneToMany(() => Board, (board) => board.author)
+  boards: Board[];
 
   @Column()
   @IsString()
