@@ -5,14 +5,14 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { User } from './users/entities/user.entities';
-import { UsersModule } from './users/users.module';
+import { User } from './user/entities/user.entities';
+import { UserModule } from './user/user.module';
 import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
+    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
