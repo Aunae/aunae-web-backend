@@ -1,6 +1,14 @@
 import { IsEmail, IsOptional, IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserAct } from './userAct.entities';
 
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
@@ -30,4 +38,8 @@ export class User {
   @IsString()
   @ApiProperty({ description: 'coverImg' })
   coverImg?: string;
+
+  @OneToOne(() => UserAct)
+  @JoinColumn()
+  userAct: UserAct;
 }
