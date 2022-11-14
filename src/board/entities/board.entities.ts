@@ -1,3 +1,4 @@
+import { User } from 'src/user/entities/user.entities';
 import {
   Column,
   CreateDateColumn,
@@ -5,10 +6,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entities';
 
 @Entity()
 export class Board {
@@ -28,7 +27,7 @@ export class Board {
   description: string;
 
   @Column()
-  viewCount: Number;
+  viewCount: number;
 
   @CreateDateColumn()
   createdAt: Date;

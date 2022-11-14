@@ -3,12 +3,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserAct } from './userAct.entities';
+import { Board } from 'src/board/entities/board.entities';
 
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
@@ -42,4 +44,7 @@ export class User {
   @OneToOne(() => UserAct)
   @JoinColumn()
   userAct: UserAct;
+
+  @OneToMany(() => Board, (board) => board.author)
+  boards: Board[];
 }
