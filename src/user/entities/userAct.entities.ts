@@ -6,12 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import {Role} from "./types/user.role.enum";
 
-export enum Role {
-  MEMBER = 'member',
-  ADMIN = 'admin',
-  OWNER = 'owner',
-}
 
 @Entity({ name: 'userAct' })
 export class UserAct {
