@@ -15,7 +15,7 @@ export class Board {
   id: string;
 
   @ManyToOne(() => User, (user) => user.boards)
-  author: string;
+  author: User;
 
   @Column()
   title: string;
