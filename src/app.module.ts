@@ -1,31 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { User } from './user/entities/user.entities';
 import { UserModule } from './user/user.module';
 import { CommentsModule } from './comments/comments.module';
+import { AppConfigModule } from './configs/app/app.config.module';
+import { BoardModule } from './board/board.module';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod',
-      validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('dev', 'prod').required(),
-        DB_HOST: Joi.string().required(),
-        DB_PORT: Joi.string().required(),
-        DB_USERNAME: Joi.string().required(),
-        DB_PASSWORD: Joi.string().required(),
-        DB_NAME: Joi.string().required(),
-      }),
-    }),
+    AppConfigModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -35,9 +22,11 @@ import { CommentsModule } from './comments/comments.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User],
+      autoLoadEntities: true,
+      entities: [],
     }),
     CommentsModule,
+    BoardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
