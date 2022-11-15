@@ -21,7 +21,7 @@ export class Board {
   title: string;
 
   @Column()
-  thumnail: string;
+  thumbnail: string;
 
   @Column()
   description: string;
