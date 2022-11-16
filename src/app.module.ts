@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entities';
 import { UserModule } from './user/user.module';
-import { CommentsModule } from './comments/comments.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -37,7 +37,7 @@ import { CommentsModule } from './comments/comments.module';
       logging: process.env.NODE_ENV !== 'prod',
       entities: [User],
     }),
-    CommentsModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
