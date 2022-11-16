@@ -1,3 +1,4 @@
+import { User } from 'src/user/entities/user.entities';
 import {
   Column,
   CreateDateColumn,
@@ -10,19 +11,22 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'comments' })
-export class Comments {
+@Entity({ name: 'comment' })
+export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   description: string;
 
-  @OneToMany(() => Comments, (comment) => comment.children)
-  parent: Comments;
+  @ManyToOne(() => User, (user) => user.comments)
+  author: User;
 
-  @ManyToOne(() => Comments, (comment) => comment.parent)
-  children: Comments[];
+  @OneToMany(() => Comment, (comment) => comment.children)
+  parent: Comment;
+
+  @ManyToOne(() => Comment, (comment) => comment.parent)
+  children: Comment[];
 
   @CreateDateColumn({ name: 'create_at', comment: '생성일' })
   createdAt: Date;
