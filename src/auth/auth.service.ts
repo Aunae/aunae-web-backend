@@ -15,7 +15,7 @@ export class AuthService {
   async getToken(user) {
     const { password, ...result } = user;
 
-    const payload = { user_id: user.username, sub: user.id };
+    const payload = { username: user.username, sub: user.id };
     const accessToken = await this.jwtService.sign(payload, {
       privateKey: jwtConstants.secret,
     });
