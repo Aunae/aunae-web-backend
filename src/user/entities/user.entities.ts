@@ -11,6 +11,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { UserAct } from './userAct.entities';
 import { Board } from 'src/board/entities/board.entities';
+import { Comment } from 'src/comment/entities/comment.entities';
 
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
@@ -47,4 +48,7 @@ export class User {
 
   @OneToMany(() => Board, (board) => board.author)
   boards: Board[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }
