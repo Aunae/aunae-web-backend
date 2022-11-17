@@ -19,7 +19,8 @@ export class ConnectionService implements TypeOrmOptionsFactory {
       password: this.configService.get<string>('DB_PASSWORD'),
       database: this.configService.get<string>('DB_NAME'),
       autoLoadEntities: true,
-      entities: [User, UserAct, Board, Comment],
+      entities: [],
+      // entities: [User, UserAct, Board, Comment],
 
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',

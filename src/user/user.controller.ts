@@ -23,7 +23,7 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard)
   getUser(@Req() req) {
-    return this.userService.getUser(req.user);
+    return this.userService.getUser(req.user.id);
   }
 
   @Post()
