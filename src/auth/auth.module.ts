@@ -8,10 +8,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/constants';
 import { JwtStrategy } from './strategies/auth.jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    UserModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
