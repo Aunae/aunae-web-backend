@@ -20,6 +20,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    */
   async validate(payload: any) {
     // req로 보내줌
-    return { user_id: payload.user_id, id: payload.sub };
+    return { username: payload.username, id: payload.sub };
   }
 }
