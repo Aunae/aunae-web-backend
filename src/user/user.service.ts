@@ -1,26 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entities';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import {bcryptConstants} from "./entities/types/user.enum";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  async getUser(user) {
-    const { username, id } = user;
-    const userFind = await this.userRepository.findOne({ where: { id } });
-    userFind.password = null;
-    return userFind;
+  async getUser(userId: string) {
+    return await this.userRepository.findOne({ where: { id: userId } });
   }
 
   async createUser(createUserDto: CreateUserDto) {
-    const { username, email, password } = createUserDto;
-    const user = this.userRepository.create({ username, email, password });
+    const { email } = createUserDto;
+    const user = this.userRepository.create(createUserDto);
+
+    const isExist = await this.userRepository.findOneBy({ email });
+    if (isExist) {
+      throw new BadRequestException('이미 존재하는 사용자입니다.');
+    }
 
     return await this.userRepository.save(user);
   }

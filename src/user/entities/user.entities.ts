@@ -8,13 +8,15 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserAct } from './userAct.entities';
 import { Board } from 'src/board/entities/board.entities';
 import * as bcrypt from 'bcrypt';
-import {bcryptConstants} from "./types/user.enum";
+import { bcryptConstants } from './types/user.enum';
 import { Comment } from 'src/comment/entities/comment.entities';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
@@ -36,6 +38,7 @@ export class User {
 
   @Column()
   @IsString()
+  @Exclude()
   @ApiProperty({ description: 'password' })
   password: string;
 
@@ -51,11 +54,12 @@ export class User {
 
   @OneToMany(() => Board, (board) => board.author)
   boards: Board[];
-  
+
   @OneToMany(() => Comment, (comment) => comment.author)
   comments: Comment[];
-  
+
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     const salt = await bcrypt.genSalt(bcryptConstants.HASH_ROUNDS);
     this.password = await bcrypt.hash(this.password, salt);
