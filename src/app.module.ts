@@ -1,3 +1,4 @@
+import { UserAct } from './user/entities/userAct.entities';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entities';
 import { UserModule } from './user/user.module';
 import { CommentModule } from './comment/comment.module';
+import { Board } from './board/entities/board.entities';
+import { Comment } from './comment/entities/comment.entities';
 
 @Module({
   imports: [
@@ -35,7 +38,7 @@ import { CommentModule } from './comment/comment.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User],
+      entities: [User, Comment, Board, UserAct],
     }),
     CommentModule,
   ],
