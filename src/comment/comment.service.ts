@@ -9,12 +9,10 @@ import { Comment } from './entities/comment.entities';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-    @InjectRepository(Board) private boardRepository: Repository<Board>,
   ) {}
 
-  async getComment(id: string): Promise<ResponseCommentDto> {
-    return await this.commentRepository.findOne({ where: { id } });
+  async getComment(commentId: string): Promise<ResponseCommentDto> {
+    return await this.commentRepository.findOne({ where: { id: commentId } });
   }
 }
