@@ -15,13 +15,13 @@ export class Board {
   id: string;
 
   @ManyToOne(() => User, (user) => user.boards)
-  author: string;
+  author: User;
 
   @Column()
   title: string;
 
   @Column()
-  thumnail: string;
+  thumbnail: string;
 
   @Column()
   description: string;
