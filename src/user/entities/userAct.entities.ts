@@ -23,17 +23,17 @@ export class UserAct {
   @CreateDateColumn()
   @IsDate()
   @ApiProperty({ description: '생성 날짜' })
-  createAt: Date;
+  createdAt: Date;
 
   @CreateDateColumn()
   @IsDate()
   @ApiProperty({ description: '수정 날짜' })
-  updateAt: Date;
+  updatedAt: Date;
 
   @CreateDateColumn()
   @IsDate()
   @ApiProperty({ description: '삭제 날짜' })
-  deleteAt: Date;
+  deletedAt: Date;
 
   @Column({ default: 0 })
   @IsInt()
