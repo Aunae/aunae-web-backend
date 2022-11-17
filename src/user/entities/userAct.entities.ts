@@ -13,7 +13,7 @@ export enum Role {
   OWNER = 'owner',
 }
 
-@Entity({ name: 'userAct' })
+@Entity({ name: 'useract' })
 export class UserAct {
   @PrimaryGeneratedColumn('uuid')
   @IsString()
