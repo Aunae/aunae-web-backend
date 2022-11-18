@@ -1,4 +1,10 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import {
   Column,
   Entity,
@@ -38,6 +44,8 @@ export class User {
 
   @Column()
   @IsString()
+  @MinLength(8)
+  @MaxLength(125)
   @Exclude()
   @ApiProperty({ description: 'password' })
   password: string;

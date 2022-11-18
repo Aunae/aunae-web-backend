@@ -38,6 +38,6 @@ lerna-debug.log*
 ./src/constants.ts
 
 # Local env files
-.env.dev
+.env.*
 
 

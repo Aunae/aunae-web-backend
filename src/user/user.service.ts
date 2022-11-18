@@ -4,12 +4,14 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entities';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { FindUserDto } from './dtos/find-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
   async getUser(userId: string) {
     return await this.userRepository.findOne({ where: { id: userId } });
   }
@@ -26,14 +28,39 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async updateUser(user, updateUserDto: UpdateUserDto) {
-    const { email } = updateUserDto;
-    const { username } = user;
-    const updatedUser = await this.userRepository.findOne({
-      where: { username },
+  async findUser(findUserProps: FindUserDto) {
+    if (Object.keys(findUserProps).length == 0)
+      throw new Error('유저를 찾기를 수행할 수 없습니다'); // 추후 에러 메세지 분할 수행
+    const user = await this.userRepository.findOne({
+      where: { ...findUserProps },
     });
-    updatedUser.email = email;
+    return user;
+  }
 
+  async updateUser(user, updateUserDto: UpdateUserDto) {
+    const { email, username, ...updatePayload } = updateUserDto;
+    const updatedUser = await this.userRepository.findOne({
+      where: { username: user.username },
+    });
+    if (email) {
+      const isExist = await this.userRepository.findOneBy({ email });
+      if (isExist) {
+        throw new BadRequestException('이미 존재하는 이메일입니다.');
+      }
+      updatedUser.email = email;
+    }
+    if (username) {
+      const isExist = await this.userRepository.findOneBy({ username });
+      if (isExist) {
+        throw new BadRequestException('이미 존재하는 닉네임입니다.');
+      }
+      updatedUser.username = username;
+    }
+    for (const propKey in updatePayload) {
+      if (updatePayload[propKey]) {
+        updatedUser[propKey] = updatePayload[propKey];
+      }
+    }
     return await this.userRepository.save(updatedUser);
   }
 

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   Put,
@@ -24,6 +25,11 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   getUser(@Req() req) {
     return this.userService.getUser(req.user.id);
+  }
+
+  @Get('search/:email')
+  searchUser(@Param('email') email: string) {
+    return this.userService.findUser({ email });
   }
 
   @Post()
