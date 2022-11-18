@@ -1,3 +1,4 @@
+import { Comment } from 'src/comment/entities/comment.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
   Column,
@@ -7,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -28,6 +30,9 @@ export class Board {
 
   @Column()
   viewCount: number;
+
+  @OneToMany(() => Comment, (comment) => comment.board)
+  comments: Comment;
 
   @CreateDateColumn()
   createdAt: Date;

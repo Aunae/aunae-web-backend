@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Board } from 'src/board/entities/board.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
   Column,
@@ -35,6 +36,9 @@ export class Comment {
   @ManyToOne(() => User, (user) => user.comments)
   @ApiProperty({ description: '작성자' })
   author: User;
+
+  @ManyToOne(() => Board, (board) => board.comments)
+  board: Board;
 
   @OneToMany(() => Comment, (comment) => comment.children)
   @ApiProperty({ description: '부모 댓글' })
