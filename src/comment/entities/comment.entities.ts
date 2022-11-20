@@ -10,12 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
-
-export const COMMENT_STATUS = {
-  PRIVATE: 'PRIVATE',
-  PUBLIC: 'PUBLIC',
-} as const;
-export type COMMENT_STATUS = typeof COMMENT_STATUS[keyof typeof COMMENT_STATUS];
+import { COMMENT_STATUS } from '../types/comment.type';
 
 @Entity({ name: 'comment' })
 export class Comment extends BaseTimeEntity {
