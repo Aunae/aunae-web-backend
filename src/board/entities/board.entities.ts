@@ -32,7 +32,7 @@ export class Board {
   viewCount: number;
 
   @OneToMany(() => Comment, (comment) => comment.board)
-  comments: Comment;
+  comments: Comment[];
 
   @CreateDateColumn()
   createdAt: Date;
