@@ -9,7 +9,7 @@ import {
 import { Request, Response } from 'express';
 
 @Catch(UnauthorizedException)
-export class UnauthorizedFilter implements ExceptionFilter {
+export class UnauthorizedCommentFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpException.name);
   /**
    * @author yoonki1207
