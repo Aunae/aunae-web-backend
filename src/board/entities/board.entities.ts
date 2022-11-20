@@ -9,6 +9,7 @@ import {
   ManyToOne,
   UpdateDateColumn,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -16,6 +17,10 @@ export class Board {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ name: 'authorId' })
+  authorId: number;
+
+  @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
   @ManyToOne(() => User, (user) => user.boards)
   author: User;
 
