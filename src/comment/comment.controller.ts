@@ -27,10 +27,11 @@ export class CommentController {
     description: '댓글 uuid로 댓글 정보를 가져온다.',
   })
   getComment(@Param('id') id, @GetUser() user: User) {
-    return this.commentService.getComment(id);
+    return this.commentService.getComment(id, user);
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: '댓글을 작성한다.',
     description: '댓글을 작성한다.',
@@ -42,7 +43,14 @@ export class CommentController {
     return this.commentService.createComment(user, createCommentDto);
   }
 
+  @Post('/:id')
+  @UseGuards(JwtAuthGuard)
+  createCommentOnComment() {
+    return this.commentService;
+  }
+
   @Put()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: '댓글을 수정한다.',
     description: '댓글 수정한다.',
@@ -55,6 +63,11 @@ export class CommentController {
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '댓글을 삭제한다.',
+    description: '댓글 삭제한다.',
+  })
   deleteComment(@GetUser() user: User, @Param('id') commentId: string) {
     return this.commentService.deleteComment(user, commentId);
   }
