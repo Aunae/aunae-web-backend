@@ -1,7 +1,7 @@
 import { UpdateCommentDto } from './dtos/update-comment.dto';
 import { UserService } from '../user/user.service';
 import { CreateCommentDto } from './dtos/create-comment.dto';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entities';
 import { Repository, UpdateResult } from 'typeorm';
@@ -25,16 +25,20 @@ export class CommentService {
     return await this.commentRepository.findOne({ where: { id: commentId } });
   }
 
-  async createComment(user: User, dto: CreateCommentDto) {
-    const findUser = await this.userService.getUser(user.id);
-    const comment = await this.commentRepository.create({
-      author: findUser,
-      description: dto.description,
-      status: dto.status,
-      parent: dto.parent,
+  async createComment(userId: string, dto: CreateCommentDto): Promise<Comment> {
+    const foundUser = await this.userService.getUser(userId);
+    if (!foundUser) {
+      throw new BadRequestException('사용자를 찾을 수 없습니다.');
+    }
+
+    const comment = this.commentRepository.create({
+      authorId: userId,
+      ...dto,
     });
+
     return await this.commentRepository.save(comment);
   }
+
   /**
    *
    * @param user user entity
