@@ -1,6 +1,6 @@
-import { COMMENT_STATUS } from './../entities/comment.entities';
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsString, IsUUID } from 'class-validator';
+import { COMMENT_STATUS } from '../types/comment.type';
 
 export class UpdateCommentDto {
   @IsString()

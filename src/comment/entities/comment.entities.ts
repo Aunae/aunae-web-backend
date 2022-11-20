@@ -3,24 +3,17 @@ import { Board } from 'src/board/entities/board.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
-  UpdateDateColumn,
 } from 'typeorm';
-
-export const COMMENT_STATUS = {
-  PRIVATE: 'PRIVATE',
-  PUBLIC: 'PUBLIC',
-} as const;
-export type COMMENT_STATUS = typeof COMMENT_STATUS[keyof typeof COMMENT_STATUS];
+import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
+import { COMMENT_STATUS } from '../types/comment.type';
 
 @Entity({ name: 'comment' })
-export class Comment {
+export class Comment extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ description: 'id' })
   id: string;
@@ -33,27 +26,30 @@ export class Comment {
   @ApiProperty({ description: '공개 비공개' })
   status: COMMENT_STATUS;
 
+  @Column({ name: 'authorId' })
+  authorId: string;
+
+  @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
   @ManyToOne(() => User, (user) => user.comments)
   @ApiProperty({ description: '작성자' })
   author: User;
 
+  @Column({ name: 'boardId' })
+  boardId: string;
+
+  @JoinColumn({ name: 'boardId', referencedColumnName: 'id' })
   @ManyToOne(() => Board, (board) => board.comments)
   board: Board;
+
+  @Column({ name: 'parentId' })
+  parentId: string;
 
   @OneToMany(() => Comment, (comment) => comment.children)
   @ApiProperty({ description: '부모 댓글' })
   parent: Comment;
 
+  @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
   @ManyToOne(() => Comment, (comment) => comment.parent)
   @ApiProperty({ description: '자식 댓글' })
   children: Comment[];
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt: Date;
 }

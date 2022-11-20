@@ -2,22 +2,18 @@ import { Comment } from 'src/comment/entities/comment.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  UpdateDateColumn,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
+import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
 
 @Entity()
-export class Board {
+export class Board extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @ManyToOne(() => User, (user) => user.boards)
-  author: User;
 
   @Column()
   title: string;
@@ -31,15 +27,13 @@ export class Board {
   @Column()
   viewCount: number;
 
+  @Column({ name: 'authorId' })
+  authorId: string;
+
+  @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
+  @ManyToOne(() => User, (user) => user.boards)
+  author: User;
+
   @OneToMany(() => Comment, (comment) => comment.board)
-  comments: Comment;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
+  comments: Comment[];
 }
