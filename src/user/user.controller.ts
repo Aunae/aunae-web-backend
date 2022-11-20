@@ -1,14 +1,15 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
   Req,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -34,6 +35,7 @@ export class UserController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }

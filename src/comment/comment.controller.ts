@@ -39,7 +39,7 @@ export class CommentController {
     @GetUser() user: User,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.commentService.createComment(user, createCommentDto);
+    return this.commentService.createComment(user.id, createCommentDto);
   }
 
   @Put()

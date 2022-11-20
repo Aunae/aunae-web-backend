@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsOptional, IsString, IsUUID } from 'class-validator';
-import { Comment, COMMENT_STATUS } from '../entities/comment.entities';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { COMMENT_STATUS } from '../types/comment.type';
 
 export class CreateCommentDto {
   @IsUUID()
@@ -17,5 +17,5 @@ export class CreateCommentDto {
   status: COMMENT_STATUS;
 
   @IsOptional()
-  parent?: Comment | null;
+  parentId?: string;
 }
