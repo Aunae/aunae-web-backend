@@ -15,10 +15,17 @@ import { User } from 'src/user/entities/user.entities';
 import { CommentService } from './comment.service';
 import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { UpdateCommentDto } from './dtos/update-comment.dto';
+import { userInfo } from 'os';
 
 @Controller('comment')
 export class CommentController {
   constructor(private commentService: CommentService) {}
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getAllComments(@GetUser() user: User) {
+    return this.commentService.getAllComments(user.id);
+  }
 
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
@@ -45,8 +52,13 @@ export class CommentController {
 
   @Post('/:id')
   @UseGuards(JwtAuthGuard)
-  createCommentOnComment() {
-    return this.commentService;
+  createCommentOnComment(
+    @Param('id') id: string,
+    @GetUser() user: User,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    createCommentDto.parentId = id;
+    return this.commentService.createComment(user.id, createCommentDto);
   }
 
   @Put()

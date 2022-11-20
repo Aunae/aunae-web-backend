@@ -16,6 +16,10 @@ export class CommentService {
     private userService: UserService,
   ) {}
 
+  async getAllComments(userId: string) {
+    return await this.userService.getUser(userId);
+  }
+
   /**
    *
    * @param commentId id of comment
