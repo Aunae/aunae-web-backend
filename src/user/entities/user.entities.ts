@@ -49,7 +49,7 @@ export class User {
   coverImg?: string;
 
   @OneToOne(() => UserAct)
-  @JoinColumn()
+  @JoinColumn() // 🤔
   userAct: UserAct;
 
   @OneToMany(() => Board, (board) => board.author)
