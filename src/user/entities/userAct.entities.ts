@@ -1,34 +1,15 @@
-import { IsDate, IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './types/user.role.enum';
+import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
 
 @Entity({ name: 'useract' })
-export class UserAct {
+export class UserAct extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   @IsString()
   @ApiProperty({ description: 'id' })
   id: string;
-
-  @CreateDateColumn()
-  @IsDate()
-  @ApiProperty({ description: '생성 날짜' })
-  createdAt: Date;
-
-  @CreateDateColumn()
-  @IsDate()
-  @ApiProperty({ description: '수정 날짜' })
-  updatedAt: Date;
-
-  @CreateDateColumn()
-  @IsDate()
-  @ApiProperty({ description: '삭제 날짜' })
-  deletedAt: Date;
 
   @Column({ default: 0 })
   @IsInt()

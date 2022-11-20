@@ -3,15 +3,12 @@ import { Board } from 'src/board/entities/board.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
-  UpdateDateColumn,
 } from 'typeorm';
+import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
 
 export const COMMENT_STATUS = {
   PRIVATE: 'PRIVATE',
@@ -20,7 +17,7 @@ export const COMMENT_STATUS = {
 export type COMMENT_STATUS = typeof COMMENT_STATUS[keyof typeof COMMENT_STATUS];
 
 @Entity({ name: 'comment' })
-export class Comment {
+export class Comment extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ description: 'id' })
   id: string;
@@ -47,13 +44,4 @@ export class Comment {
   @ManyToOne(() => Comment, (comment) => comment.parent)
   @ApiProperty({ description: '자식 댓글' })
   children: Comment[];
-
-  @CreateDateColumn({ name: 'create_at', comment: '생성일' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'update_at', comment: '수정일' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'delete_at', comment: '삭제일' })
-  deletedAt: Date;
 }
