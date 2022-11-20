@@ -1,9 +1,8 @@
 import { UpdateCommentDto } from './dtos/update-comment.dto';
-import { UserService } from './../user/user.service';
+import { UserService } from '../user/user.service';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Board } from 'src/board/entities/board.entities';
 import { User } from 'src/user/entities/user.entities';
 import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
