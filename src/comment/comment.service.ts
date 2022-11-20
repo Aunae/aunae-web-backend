@@ -21,7 +21,7 @@ export class CommentService {
    * @param commentId id of comment
    * @returns comment entity
    */
-  async getComment(commentId: string): Promise<ResponseCommentDto> {
+  async getComment(commentId: string, user: User): Promise<ResponseCommentDto> {
     return await this.commentRepository.findOne({ where: { id: commentId } });
   }
 
