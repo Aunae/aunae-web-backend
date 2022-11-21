@@ -1,3 +1,4 @@
+import { COMMENT_STATUS } from './types/comment.type';
 import { UpdateCommentDto } from './dtos/update-comment.dto';
 import { UserService } from '../user/user.service';
 import { CreateCommentDto } from './dtos/create-comment.dto';
@@ -16,13 +17,29 @@ export class CommentService {
     private userService: UserService,
   ) {}
 
+  async getAllComments(userId: string) {
+    return await this.userService.getUser(userId);
+  }
+
   /**
    *
    * @param commentId id of comment
    * @returns comment entity
    */
-  async getComment(commentId: string, user: User): Promise<ResponseCommentDto> {
-    return await this.commentRepository.findOne({ where: { id: commentId } });
+  async getComment(
+    commentId: string,
+    userId: string,
+  ): Promise<ResponseCommentDto> {
+    const comment = await this.commentRepository.findOne({
+      where: { id: commentId },
+    });
+    if (
+      comment.status === COMMENT_STATUS.PRIVATE &&
+      userId !== comment.author.id
+    ) {
+      comment.description = null;
+    }
+    return comment;
   }
 
   async createComment(userId: string, dto: CreateCommentDto): Promise<Comment> {
@@ -37,6 +54,16 @@ export class CommentService {
     });
 
     return await this.commentRepository.save(comment);
+  }
+
+  async getAllCommentsOnBoard(userId: string, boardId: string) {
+    const comments = await this.commentRepository.find({ where: { boardId } });
+    comments.map((comment) =>
+      comment.status === COMMENT_STATUS.PRIVATE && comment.author.id !== userId
+        ? { description: null, ...comment }
+        : comment,
+    );
+    return comments;
   }
 
   /**
