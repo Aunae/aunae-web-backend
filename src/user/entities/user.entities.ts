@@ -1,3 +1,4 @@
+import { Reply } from './../../reply/entities/reply.entities';
 import {
   IsEmail,
   IsOptional,
@@ -65,6 +66,9 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.author)
   comments: Comment[];
+
+  @OneToMany(() => Reply, (reply) => reply.author)
+  replies: Reply[];
 
   @BeforeInsert()
   @BeforeUpdate()
