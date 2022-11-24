@@ -8,7 +8,6 @@ import { User } from 'src/user/entities/user.entities';
 import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
 import { Comment } from './entities/comment.entities';
-import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CommentService {
@@ -24,6 +23,7 @@ export class CommentService {
   /**
    *
    * @param commentId id of comment
+   * @param userId id of user
    * @returns comment entity
    */
   async getComment(
@@ -70,17 +70,17 @@ export class CommentService {
    *
    * @param user user entity
    * @param updateCommentDto updateCommentDto
-   * @returns fail throws NotFoundException, success returns comment entity
+   * @returns fail throws BadRequestException, success returns comment entity
    */
   async updateComment(user: User, updateCommentDto: UpdateCommentDto) {
     const { id, description, status } = updateCommentDto;
     const findUser = await this.userService.getUser(user.id);
     const comment = await this.commentRepository.findOne({ where: { id } });
     if (!comment)
-      throw new NotFoundException(`Not found comment by id ${comment}`);
+      throw new BadRequestException(`Not found comment by id ${comment}`);
 
     if (findUser.id !== comment.author.id)
-      throw new NotFoundException(
+      throw new BadRequestException(
         `Can not update comment by user ${user.username}`,
       );
 
@@ -94,16 +94,16 @@ export class CommentService {
    *
    * @param user user entity
    * @param commentId id of comment
-   * @returns failed throws NotFoundException, success returns UpdateResult
+   * @returns failed throws BadRequestException, success returns UpdateResult
    */
   async deleteComment(user: User, commentId: string): Promise<UpdateResult> {
     const comment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
     if (!comment)
-      throw new NotFoundException(`Can not find comment by id ${commentId}`);
+      throw new BadRequestException(`Can not find comment by id ${commentId}`);
     if (user.id !== comment.author.id)
-      throw new NotFoundException(
+      throw new BadRequestException(
         `Can not delete comment by user ${user.username}`,
       );
 

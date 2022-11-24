@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
   MaxLength,
@@ -17,12 +18,13 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserAct } from './userAct.entities';
+import { UserAct } from './user-act.entities';
 import { Board } from 'src/board/entities/board.entities';
 import * as bcrypt from 'bcrypt';
 import { bcryptConstants } from './types/user.enum';
 import { Comment } from 'src/comment/entities/comment.entities';
 import { Exclude } from 'class-transformer';
+import { Role } from './types/user.role.enum';
 
 @Entity({ name: 'user' })
 @Unique(['username', 'email'])
@@ -56,8 +58,17 @@ export class User {
   @ApiProperty({ description: 'coverImg' })
   coverImg?: string;
 
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.MEMBER,
+  })
+  @IsOptional()
+  @IsEnum(Role)
+  @ApiProperty({ description: '권한' })
+  role: Role;
+
   @OneToOne(() => UserAct)
-  @JoinColumn() // 🤔
   userAct: UserAct;
 
   @OneToMany(() => Board, (board) => board.author)

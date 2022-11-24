@@ -12,31 +12,29 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async getUser(userId: string) {
+  async getUser(userId: string): Promise<User> {
     return await this.userRepository.findOne({ where: { id: userId } });
   }
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<void> {
     const { email } = createUserDto;
     const user = this.userRepository.create(createUserDto);
 
-    const isExist = await this.userRepository.findOneBy({ email });
+    const isExist = await this.findUser({ email });
     if (isExist) {
       throw new BadRequestException('이미 존재하는 사용자입니다.');
     }
 
     /** Todo: User Act 작업 */
-
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   async findUser(findUserProps: FindUserDto) {
     if (Object.keys(findUserProps).length == 0)
       throw new Error('유저를 찾기를 수행할 수 없습니다'); // 추후 에러 메세지 분할 수행
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: { ...findUserProps },
     });
-    return user;
   }
 
   async updateUser(user, updateUserDto: UpdateUserDto) {

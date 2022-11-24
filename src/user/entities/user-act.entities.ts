@@ -1,8 +1,14 @@
-import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsInt, IsString } from 'class-validator';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from './types/user.role.enum';
 import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
+import { User } from './user.entities';
 
 @Entity({ name: 'useract' })
 export class UserAct extends BaseTimeEntity {
@@ -16,15 +22,9 @@ export class UserAct extends BaseTimeEntity {
   @ApiProperty({ description: '활동 점수' })
   reputation: number;
 
-  @Column({
-    type: 'enum',
-    enum: Role,
-    default: Role.MEMBER,
-  })
-  @IsOptional()
-  @IsEnum(Role)
-  @ApiProperty({ description: '권한' })
-  role: Role;
+  @JoinColumn()
+  @OneToOne((type) => User)
+  user: User;
 
   @Column()
   @IsString()
