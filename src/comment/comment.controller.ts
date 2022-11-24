@@ -23,12 +23,6 @@ import { UpdateCommentDto } from './dtos/update-comment.dto';
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  getAllComments(@GetUser() user: User) {
-    return this.commentService.getAllComments(user.id);
-  }
-
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({

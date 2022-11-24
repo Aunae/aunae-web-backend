@@ -15,11 +15,6 @@ export class CommentService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     private userService: UserService,
   ) {}
-
-  async getAllComments(userId: string) {
-    return await this.userService.getUser(userId);
-  }
-
   /**
    *
    * @param commentId id of comment
