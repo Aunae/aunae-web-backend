@@ -5,11 +5,13 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './entities/user.entities';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { FindUserDto } from './dtos/find-user.dto';
+import { Comment } from 'src/comment/entities/comment.entities';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
   ) {}
 
   async getUser(userId: string): Promise<User> {
@@ -73,5 +75,10 @@ export class UserService {
       return 'Failed to delete User';
     }
     return 'Success to delete User';
+  }
+
+  async getAllComments(authorId: string): Promise<Comment[]> {
+    const comments = await this.commentRepository.find({ where: { authorId } });
+    return comments;
   }
 }
