@@ -9,12 +9,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { BaseTimeEntity } from 'src/common/entities/baseTime.entity';
 
 /**
  * 질문에 대한 답변 table입니다. 답변에 대한 코멘트가 있을 수 있습니다.
  */
 @Entity({ name: 'reply' })
-export class Reply {
+export class Reply extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   @IsString()
   @ApiProperty({ description: 'id' })
