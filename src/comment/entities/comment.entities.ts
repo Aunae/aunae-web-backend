@@ -44,12 +44,12 @@ export class Comment extends BaseTimeEntity {
   @Column({ name: 'parentId' })
   parentId: string;
 
-  @OneToMany(() => Comment, (comment) => comment.children)
+  @ManyToOne(() => Comment, (comment) => comment.children)
   @ApiProperty({ description: '부모 댓글' })
   parent: Comment;
 
   @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
-  @ManyToOne(() => Comment, (comment) => comment.parent)
+  @OneToMany(() => Comment, (comment) => comment.parent)
   @ApiProperty({ description: '자식 댓글' })
   children: Comment[];
 }
