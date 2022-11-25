@@ -29,7 +29,7 @@ export class Reply extends BaseTimeEntity {
   author: User;
 
   /**
-   * 단방향 ManyToOne.
+   * 단방향 ManyToMany
    */
   @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
   @ManyToMany(() => User)
