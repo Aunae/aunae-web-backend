@@ -24,6 +24,9 @@ export class Reply extends BaseTimeEntity {
   @Column()
   description: string;
 
+  @Column({ name: 'authorId' })
+  authorId: string;
+
   @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
   @ManyToOne(() => User, (user) => user.replies)
   author: User;
