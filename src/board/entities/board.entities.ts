@@ -1,3 +1,4 @@
+import { Reply } from './../../reply/entities/reply.entities';
 import { Comment } from 'src/comment/entities/comment.entities';
 import { User } from 'src/user/entities/user.entities';
 import {
@@ -36,4 +37,7 @@ export class Board extends BaseTimeEntity {
 
   @OneToMany(() => Comment, (comment) => comment.board)
   comments: Comment[];
+
+  @OneToMany(() => Reply, (reply) => reply.board)
+  replies: Reply[];
 }
