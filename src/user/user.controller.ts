@@ -1,3 +1,4 @@
+import { User } from 'src/user/entities/user.entities';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -14,6 +15,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { GetUser } from './decorators/user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
@@ -51,5 +53,11 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   deleteUser(@Req() req) {
     return this.userService.deleteUser(req.user);
+  }
+
+  @Get('/comment')
+  @UseGuards(JwtAuthGuard)
+  getAllComments(@GetUser() user: User) {
+    return this.userService.getAllComments(user.id);
   }
 }

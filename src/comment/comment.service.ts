@@ -15,11 +15,6 @@ export class CommentService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     private userService: UserService,
   ) {}
-
-  async getAllComments(userId: string) {
-    return await this.userService.getUser(userId);
-  }
-
   /**
    *
    * @param commentId id of comment
@@ -64,30 +59,6 @@ export class CommentService {
         : comment,
     );
     return comments;
-  }
-
-  /**
-   *
-   * @param user user entity
-   * @param updateCommentDto updateCommentDto
-   * @returns fail throws BadRequestException, success returns comment entity
-   */
-  async updateComment(user: User, updateCommentDto: UpdateCommentDto) {
-    const { id, description, status } = updateCommentDto;
-    const findUser = await this.userService.getUser(user.id);
-    const comment = await this.commentRepository.findOne({ where: { id } });
-    if (!comment)
-      throw new BadRequestException(`Not found comment by id ${comment}`);
-
-    if (findUser.id !== comment.author.id)
-      throw new BadRequestException(
-        `Can not update comment by user ${user.username}`,
-      );
-
-    comment.description = description;
-    comment.status = status;
-
-    return await this.commentRepository.save(comment);
   }
 
   /**

@@ -23,12 +23,6 @@ import { UpdateCommentDto } from './dtos/update-comment.dto';
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  getAllComments(@GetUser() user: User) {
-    return this.commentService.getAllComments(user.id);
-  }
-
   @Get('/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
@@ -76,6 +70,10 @@ export class CommentController {
 
   @Post('/:id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '대댓글을 작성한다.',
+    description: '대댓글을 작성한다.',
+  })
   createCommentOnComment(
     @Param('id') id: string,
     @GetUser() user: User,
@@ -85,20 +83,7 @@ export class CommentController {
     return this.commentService.createComment(user.id, createCommentDto);
   }
 
-  @Put()
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary: '댓글을 수정한다.',
-    description: '댓글 수정한다.',
-  })
-  updateComment(
-    @GetUser() user: User,
-    @Body() updateCommentDto: UpdateCommentDto,
-  ) {
-    return this.commentService.updateComment(user, updateCommentDto);
-  }
-
-  @Delete('/:id')
+  @Post('/delete/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: '댓글을 삭제한다.',
