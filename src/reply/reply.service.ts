@@ -12,13 +12,13 @@ export class ReplyService {
     @InjectRepository(Board) private boardRepository: Repository<Board>,
   ) {}
 
-  async getReplyById(id: string): Promise<Reply> {
+  async getReplyById(id: number): Promise<Reply> {
     const reply = await this.replyRepository.findOne({ where: { id } });
     if (!reply) throw new BadRequestException('댓글을 찾을 수 없습니다.');
     return reply;
   }
 
-  async deleteReplyById(userId: string, replyId: string) {
+  async deleteReplyById(userId: string, replyId: number) {
     const reply = await this.getReplyById(replyId);
     if (reply.authorId !== userId) {
       throw new BadRequestException('댓글 삭제 권한이 없습니다.');
@@ -28,7 +28,7 @@ export class ReplyService {
     }
   }
 
-  async getRepliesOnBoard(boardId: string): Promise<Reply[]> {
+  async getRepliesOnBoard(boardId: number): Promise<Reply[]> {
     const board = await this.boardRepository.findOne({
       where: { id: boardId },
       relations: ['replies'],
@@ -42,7 +42,7 @@ export class ReplyService {
     createReplyDto: CreateReplyDto,
   ): Promise<Reply> {
     const reply = this.replyRepository.create({
-      id: userId,
+      authorId: userId,
       ...createReplyDto,
     });
     return await this.replyRepository.save(reply);

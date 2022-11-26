@@ -12,6 +12,8 @@ import {
   Body,
   Put,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { User } from 'src/user/entities/user.entities';
@@ -55,7 +57,7 @@ export class CommentController {
     description:
       'board의 모든 댓글들을 가져온다. Unauthorized 예외처리가 되어있어 /board/:id/unauthorized 로 redirect된다.',
   })
-  getAllCommentsOnBoard(@GetUser() user: User, @Param('id') boardId: string) {
+  getAllCommentsOnBoard(@GetUser() user: User, @Param('id') boardId: number) {
     return this.commentService.getAllCommentsOnBoard(user.id, boardId);
   }
 
@@ -64,7 +66,7 @@ export class CommentController {
     summary: 'Unauthorized: board의 모든 댓글들을 가져온다',
     description: 'Unauthorized: board의 모든 댓글들을 가져온다',
   })
-  _getAllCommentsOnBoard(@Param('id') boardId: string) {
+  _getAllCommentsOnBoard(@Param('id') boardId: number) {
     return this.commentService.getAllCommentsOnBoard(null, boardId);
   }
 

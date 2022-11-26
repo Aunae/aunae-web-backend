@@ -10,7 +10,7 @@ export class BoardService {
     @InjectRepository(Board) private boardRepository: Repository<Board>,
   ) {}
 
-  async getBoardById(id: string): Promise<Board> {
+  async getBoardById(id: number): Promise<Board> {
     const board = await this.boardRepository.findOne({ where: { id } });
     if (!board) throw new BadRequestException('게시글을 찾을 수 없습니다.');
 

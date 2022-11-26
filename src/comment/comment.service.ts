@@ -46,7 +46,7 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
-  async getAllCommentsOnBoard(userId: string, boardId: string) {
+  async getAllCommentsOnBoard(userId: string, boardId: number) {
     const comments = await this.commentRepository.find({ where: { boardId } });
     comments.map((comment) =>
       comment.status === COMMENT_STATUS.PRIVATE && comment.author.id !== userId
