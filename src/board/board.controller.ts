@@ -1,13 +1,18 @@
+import { CreateBoardDto } from './dtos/create-board.dto';
+import { User } from './../user/entities/user.entities';
 import { BoardService } from './board.service';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseGuards, Body } from '@nestjs/common';
+import { GetUser } from 'src/user/decorators/user.decorator';
 
 @Controller('board')
 export class BoardController {
   constructor(private boardService: BoardService) {}
 
   @Get('/:id')
-  getBoardById(@Param('id') id: string) {}
+  getBoardById(@Param('id') id: string) {
+    return this.boardService.getBoardById(id);
+  }
 
   /**
    * @Todo 어떤 "게시판"에 작성할 것인지를 명시하는 url이 필요할 것. 나중에 수정.
@@ -15,5 +20,7 @@ export class BoardController {
    */
   @Post('/')
   @UseGuards(JwtAuthGuard)
-  createBoard() {}
+  createBoard(@GetUser() user: User, @Body() dto: CreateBoardDto) {
+    return this.boardService.createBoad(user.id, dto);
+  }
 }
