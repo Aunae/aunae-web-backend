@@ -22,7 +22,7 @@ export class Comment extends BaseTimeEntity {
   @ApiProperty({ description: '댓글 내용' })
   description: string;
 
-  @Column()
+  @Column({ default: COMMENT_STATUS.PUBLIC })
   @ApiProperty({ description: '공개 비공개' })
   status: COMMENT_STATUS;
 
@@ -35,21 +35,21 @@ export class Comment extends BaseTimeEntity {
   author: User;
 
   @Column({ name: 'boardId' })
-  boardId: string;
+  boardId: number;
 
   @JoinColumn({ name: 'boardId', referencedColumnName: 'id' })
   @ManyToOne(() => Board, (board) => board.comments)
   board: Board;
 
-  @Column({ name: 'parentId' })
-  parentId: string;
+  @Column({ name: 'parentId', default: null })
+  parentId?: string | null;
 
   @ManyToOne(() => Comment, (comment) => comment.children)
   @ApiProperty({ description: '부모 댓글' })
-  parent: Comment;
+  parent?: Comment | null;
 
   @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
   @OneToMany(() => Comment, (comment) => comment.parent)
   @ApiProperty({ description: '자식 댓글' })
-  children: Comment[];
+  children?: Comment[];
 }
