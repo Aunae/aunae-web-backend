@@ -14,7 +14,7 @@ export class ReplyController {
     summary: '답변 가져오기',
     description: '답변 uuid로 답변을 가져온다.',
   })
-  getReplyById(@Param('id') id: string) {
+  getReplyById(@Param('id') id: number) {
     return this.replyService.getReplyById(id);
   }
 
@@ -24,7 +24,7 @@ export class ReplyController {
     summary: '답변 삭제하기',
     description: '답변 uuid로 답변을 삭제한다.',
   })
-  deleteReplyById(@GetUser() user: User, @Param('id') id: string) {
+  deleteReplyById(@GetUser() user: User, @Param('id') id: number) {
     return this.replyService.deleteReplyById(user.id, id);
   }
 
@@ -36,7 +36,7 @@ export class ReplyController {
     summary: '특정 보드의 답변 가져오기',
     description: '질문 board아이디로 답변을 가져온다.',
   })
-  getRepliesOnBoard(@Param('boardId') boardId: string) {
+  getRepliesOnBoard(@Param('boardId') boardId: number) {
     return this.replyService.getRepliesOnBoard(boardId);
   }
 
