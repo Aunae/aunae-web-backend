@@ -38,11 +38,6 @@ export class CommentService {
   }
 
   async createComment(userId: string, dto: CreateCommentDto): Promise<Comment> {
-    const foundUser = await this.userService.getUser(userId);
-    if (!foundUser) {
-      throw new BadRequestException('사용자를 찾을 수 없습니다.');
-    }
-
     const comment = this.commentRepository.create({
       authorId: userId,
       ...dto,
@@ -51,7 +46,7 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
-  async getAllCommentsOnBoard(userId: string, boardId: string) {
+  async getAllCommentsOnBoard(userId: string, boardId: number) {
     const comments = await this.commentRepository.find({ where: { boardId } });
     comments.map((comment) =>
       comment.status === COMMENT_STATUS.PRIVATE && comment.author.id !== userId

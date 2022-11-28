@@ -13,19 +13,19 @@ import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
 
 @Entity()
 export class Board extends BaseTimeEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
   @Column()
   title: string;
 
-  @Column()
-  thumbnail: string;
+  @Column({ default: null })
+  thumbnail?: string | null;
 
   @Column()
   description: string;
 
-  @Column()
+  @Column({ default: 0 })
   viewCount: number;
 
   @Column({ name: 'authorId' })
