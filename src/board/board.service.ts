@@ -3,6 +3,11 @@ import { Board } from './entities/board.entities';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  Pagination,
+  IPaginationOptions,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class BoardService {
@@ -15,6 +20,12 @@ export class BoardService {
     if (!board) throw new BadRequestException('게시글을 찾을 수 없습니다.');
 
     return board;
+  }
+
+  async getBoardIndex(options: IPaginationOptions): Promise<Pagination<Board>> {
+    const queryBuilder = this.boardRepository.createQueryBuilder('b');
+    queryBuilder.orderBy('b.createdAt', 'DESC');
+    return paginate<Board>(queryBuilder, options);
   }
 
   async createBoad(authorId: string, dto: CreateBoardDto): Promise<Board> {

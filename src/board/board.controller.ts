@@ -2,7 +2,17 @@ import { CreateBoardDto } from './dtos/create-board.dto';
 import { User } from './../user/entities/user.entities';
 import { BoardService } from './board.service';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { Controller, Get, Param, Post, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  Body,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -17,6 +27,23 @@ export class BoardController {
   })
   getBoardById(@Param('id') id: number) {
     return this.boardService.getBoardById(id);
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: '최신 게시글 가져오기',
+    description: '최신 게시글을 paginate해서 가져옴',
+  })
+  getBoardIndex(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.boardService.getBoardIndex({
+      page,
+      limit,
+      // route: 'http://localhost:4000/boards'
+    });
   }
 
   /**
