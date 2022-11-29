@@ -15,11 +15,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   // function name must 'validate'
   async validate(username: string, password: string): Promise<any> {
     const userFind = await this.authService.findUserByUsername(username);
+    if (!userFind) {
+      throw new UnauthorizedException('User not found');
+    }
     const isValid = await bcrypt.compare(password, userFind.password);
 
     if (!isValid) {
       console.log(userFind);
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Invalid password');
     }
 
     return this.authService.getToken(userFind);
