@@ -1,3 +1,6 @@
+import { CommentService } from './../comment/comment.service';
+import { UnauthorizedCommentFilter } from './../comment/filters/comment.filter';
+import { UnauthorizedFilter } from './../auth/filters/unauthorized.filter';
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { User } from './../user/entities/user.entities';
 import { BoardService } from './board.service';
@@ -12,13 +15,17 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UseFilters,
 } from '@nestjs/common';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('board')
 export class BoardController {
-  constructor(private boardService: BoardService) {}
+  constructor(
+    private boardService: BoardService,
+    private commentService: CommentService,
+  ) {}
 
   @Get('/:id')
   @ApiOperation({
@@ -29,7 +36,7 @@ export class BoardController {
     return this.boardService.getBoardById(id);
   }
 
-  @Get()
+  @Get('/')
   @ApiOperation({
     summary: '최신 게시글 가져오기',
     description: '최신 게시글을 paginate해서 가져옴',
@@ -44,6 +51,27 @@ export class BoardController {
       limit,
       // route: 'http://localhost:4000/boards'
     });
+  }
+
+  @Get('/:id/comments')
+  @UseGuards(JwtAuthGuard)
+  @UseFilters(UnauthorizedCommentFilter)
+  @ApiOperation({
+    summary: 'board의 모든 댓글들을 가져온다',
+    description:
+      'board의 모든 댓글들을 가져온다. Unauthorized 예외처리가 되어있어 /board/:id/unauthorized 로 redirect된다.',
+  })
+  getAllCommentsOnBoard(@GetUser() user: User, @Param('id') boardId: number) {
+    return this.commentService.getAllCommentsOnBoard(user.id, boardId);
+  }
+
+  @Get('/:id/comments/unauthorized')
+  @ApiOperation({
+    summary: 'Unauthorized: board의 모든 댓글들을 가져온다',
+    description: 'Unauthorized: board의 모든 댓글들을 가져온다',
+  })
+  _getAllCommentsOnBoard(@Param('id') boardId: number) {
+    return this.commentService.getAllCommentsOnBoard(null, boardId);
   }
 
   /**
