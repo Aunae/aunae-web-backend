@@ -61,8 +61,16 @@ export class BoardController {
     description:
       'board의 모든 댓글들을 가져온다. Unauthorized 예외처리가 되어있어 /board/:id/unauthorized 로 redirect된다.',
   })
-  getAllCommentsOnBoard(@GetUser() user: User, @Param('id') boardId: number) {
-    return this.commentService.getAllCommentsOnBoard(user.id, boardId);
+  getAllCommentsOnBoard(
+    @GetUser() user: User,
+    @Param('id') boardId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    return this.commentService.getAllCommentsOnBoard(user.id, boardId, {
+      page,
+      limit,
+    });
   }
 
   @Get('/:id/comments/unauthorized')
@@ -70,8 +78,15 @@ export class BoardController {
     summary: 'Unauthorized: board의 모든 댓글들을 가져온다',
     description: 'Unauthorized: board의 모든 댓글들을 가져온다',
   })
-  _getAllCommentsOnBoard(@Param('id') boardId: number) {
-    return this.commentService.getAllCommentsOnBoard(null, boardId);
+  _getAllCommentsOnBoard(
+    @Param('id') boardId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    return this.commentService.getAllCommentsOnBoard(null, boardId, {
+      page,
+      limit,
+    });
   }
 
   /**

@@ -8,7 +8,7 @@ import { BoardService } from './board.service';
 
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([Board])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, BoardService],
   providers: [BoardService, CommentService],
   controllers: [BoardController],
 })

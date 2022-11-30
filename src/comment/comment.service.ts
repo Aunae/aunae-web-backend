@@ -1,3 +1,4 @@
+import { BoardService } from './../board/board.service';
 import { COMMENT_STATUS } from './types/comment.type';
 import { UpdateCommentDto } from './dtos/update-comment.dto';
 import { UserService } from '../user/user.service';
@@ -8,12 +9,15 @@ import { User } from 'src/user/entities/user.entities';
 import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
 import { Comment } from './entities/comment.entities';
+import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { Board } from 'src/board/entities/board.entities';
+import { isNotEmpty } from 'class-validator';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-    private userService: UserService,
+    private boardService: BoardService,
   ) {}
   /**
    *
@@ -46,14 +50,30 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
-  async getAllCommentsOnBoard(userId: string, boardId: number) {
-    const comments = await this.commentRepository.find({ where: { boardId } });
-    comments.map((comment) =>
-      comment.status === COMMENT_STATUS.PRIVATE && comment.author.id !== userId
-        ? { description: null, ...comment }
-        : comment,
-    );
-    return comments;
+  async getAllCommentsOnBoard(
+    userId: string,
+    boardId: number,
+    options: IPaginationOptions,
+  ) {
+    const comments = await this.commentRepository
+      .createQueryBuilder('comment')
+      .where(`comment.boardId = :boardId`, { boardId })
+      .orderBy('comment.createdAt', 'DESC');
+
+    const data = await paginate<Comment>(comments, options);
+
+    const board = await this.boardService.getBoardById(boardId);
+    if (board.authorId == userId) return data;
+
+    const res = {
+      ...data,
+      items: data.items.map((comment) =>
+        comment.status === COMMENT_STATUS.PRIVATE && comment.authorId !== userId
+          ? { description: null, ...comment }
+          : comment,
+      ),
+    };
+    return res;
   }
 
   /**
