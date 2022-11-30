@@ -49,27 +49,6 @@ export class CommentController {
     return this.commentService.createComment(user.id, createCommentDto);
   }
 
-  @Get('/board/:id')
-  @UseGuards(JwtAuthGuard)
-  @UseFilters(UnauthorizedCommentFilter)
-  @ApiOperation({
-    summary: 'board의 모든 댓글들을 가져온다',
-    description:
-      'board의 모든 댓글들을 가져온다. Unauthorized 예외처리가 되어있어 /board/:id/unauthorized 로 redirect된다.',
-  })
-  getAllCommentsOnBoard(@GetUser() user: User, @Param('id') boardId: number) {
-    return this.commentService.getAllCommentsOnBoard(user.id, boardId);
-  }
-
-  @Get('/board/:id/unauthorized')
-  @ApiOperation({
-    summary: 'Unauthorized: board의 모든 댓글들을 가져온다',
-    description: 'Unauthorized: board의 모든 댓글들을 가져온다',
-  })
-  _getAllCommentsOnBoard(@Param('id') boardId: number) {
-    return this.commentService.getAllCommentsOnBoard(null, boardId);
-  }
-
   @Post('/:id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
