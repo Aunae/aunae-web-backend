@@ -1,21 +1,20 @@
 import { CommentService } from './../comment/comment.service';
 import { UnauthorizedCommentFilter } from './../comment/filters/comment.filter';
-import { UnauthorizedFilter } from './../auth/filters/unauthorized.filter';
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { User } from './../user/entities/user.entities';
 import { BoardService } from './board.service';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import {
+  Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
-  Post,
-  UseGuards,
-  Body,
-  Query,
-  DefaultValuePipe,
   ParseIntPipe,
+  Post,
+  Query,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { ApiOperation } from '@nestjs/swagger';
@@ -100,6 +99,6 @@ export class BoardController {
     description: '게시글 작성하기',
   })
   createBoard(@GetUser() user: User, @Body() dto: CreateBoardDto) {
-    return this.boardService.createBoad(user.id, dto);
+    return this.boardService.createBoard(user.id, dto);
   }
 }

@@ -1,12 +1,12 @@
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { Board } from './entities/board.entities';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
-  Pagination,
   IPaginationOptions,
   paginate,
+  Pagination,
 } from 'nestjs-typeorm-paginate';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class BoardService {
     return paginate<Board>(queryBuilder, options);
   }
 
-  async createBoad(authorId: string, dto: CreateBoardDto): Promise<Board> {
+  async createBoard(authorId: string, dto: CreateBoardDto): Promise<Board> {
     const board = this.boardRepository.create({ authorId, ...dto });
     if (!board) throw new BadRequestException('게시글을 만들 수 없습니다.');
     const result = await this.boardRepository.save(board);

@@ -1,25 +1,10 @@
-import { UnauthorizedCommentFilter } from './filters/comment.filter';
-import { UnauthorizedFilter } from './../auth/filters/unauthorized.filter';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-  UseFilters,
-  Body,
-  Put,
-  Delete,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/user/decorators/user.decorator';
 import { User } from 'src/user/entities/user.entities';
 import { CommentService } from './comment.service';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
-import { UpdateCommentDto } from './dtos/update-comment.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('comment')
 export class CommentController {

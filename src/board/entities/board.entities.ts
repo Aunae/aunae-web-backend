@@ -4,10 +4,10 @@ import { User } from 'src/user/entities/user.entities';
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseTimeEntity } from '../../common/entities/baseTime.entity';
 
