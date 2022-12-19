@@ -1,12 +1,12 @@
 import { CreateBoardDto } from './dtos/create-board.dto';
 import { Board } from './entities/board.entities';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
-  Pagination,
   IPaginationOptions,
   paginate,
+  Pagination,
 } from 'nestjs-typeorm-paginate';
 
 @Injectable()
