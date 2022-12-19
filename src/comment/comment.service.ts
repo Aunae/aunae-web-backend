@@ -8,7 +8,6 @@ import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
 import { Comment } from './entities/comment.entities';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
-import { Board } from '../board/entities/board.entities';
 
 @Injectable()
 export class CommentService {
@@ -67,7 +66,7 @@ export class CommentService {
     const paginatedComments = await paginate<Comment>(queryBuilder, options);
 
     const board = await this.boardService.getBoardById(boardId);
-    const isAuthor = this.isAuthor(userId, board);
+    const isAuthor = this.isAuthor(userId, board.authorId);
     if (isAuthor) return paginatedComments;
 
     const items = paginatedComments.items.map((comment) =>
@@ -82,8 +81,8 @@ export class CommentService {
     };
   }
 
-  private isAuthor(userId: string, board: Board) {
-    return board.authorId === userId;
+  private isAuthor(userId: string, authorId: string) {
+    return userId === authorId;
   }
 
   /**
@@ -100,7 +99,8 @@ export class CommentService {
     if (!comment)
       throw new BadRequestException(`Can not find comment by id ${commentId}`);
 
-    if (user.id !== comment.authorId)
+    const isAuthor = this.isAuthor(user.id, comment.authorId);
+    if (!isAuthor)
       throw new BadRequestException(
         `Can not delete comment by user ${user.username}`,
       );
