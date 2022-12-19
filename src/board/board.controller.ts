@@ -100,6 +100,6 @@ export class BoardController {
     description: '게시글 작성하기',
   })
   createBoard(@GetUser() user: User, @Body() dto: CreateBoardDto) {
-    return this.boardService.createBoad(user.id, dto);
+    return this.boardService.createBoard(user.id, dto);
   }
 }
