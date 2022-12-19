@@ -42,7 +42,7 @@ export class Comment extends BaseTimeEntity {
   board: Board;
 
   @Column({ name: 'parentId', default: null })
-  parentId?: string | null;
+  parentId?: string;
 
   @ManyToOne(() => Comment, (comment) => comment.children)
   @ApiProperty({ description: '부모 댓글' })
