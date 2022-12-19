@@ -8,6 +8,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
 import { Comment } from './entities/comment.entities';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import { Board } from '../board/entities/board.entities';
 
 @Injectable()
 export class CommentService {
@@ -58,7 +59,7 @@ export class CommentService {
     boardId: number,
     options: IPaginationOptions,
   ) {
-    const queryBuilder = await this.commentRepository
+    const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
       .where(`comment.boardId = :boardId`, { boardId })
       .orderBy('comment.createdAt', 'DESC');
@@ -66,7 +67,8 @@ export class CommentService {
     const paginatedComments = await paginate<Comment>(queryBuilder, options);
 
     const board = await this.boardService.getBoardById(boardId);
-    if (board.authorId === userId) return paginatedComments;
+    const isAuthor = this.isAuthor(userId, board);
+    if (isAuthor) return paginatedComments;
 
     const items = paginatedComments.items.map((comment) =>
       this.isShown(comment, userId)
@@ -78,6 +80,10 @@ export class CommentService {
       ...paginatedComments,
       items,
     };
+  }
+
+  private isAuthor(userId: string, board: Board) {
+    return board.authorId === userId;
   }
 
   /**
