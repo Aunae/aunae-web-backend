@@ -58,25 +58,26 @@ export class CommentService {
     boardId: number,
     options: IPaginationOptions,
   ) {
-    const comments = await this.commentRepository
+    const queryBuilder = await this.commentRepository
       .createQueryBuilder('comment')
       .where(`comment.boardId = :boardId`, { boardId })
       .orderBy('comment.createdAt', 'DESC');
 
-    const data = await paginate<Comment>(comments, options);
+    const paginatedComments = await paginate<Comment>(queryBuilder, options);
 
     const board = await this.boardService.getBoardById(boardId);
-    if (board.authorId == userId) return data;
+    if (board.authorId === userId) return paginatedComments;
 
-    const res = {
-      ...data,
-      items: data.items.map((comment) =>
-        comment.status === COMMENT_STATUS.PRIVATE && comment.authorId !== userId
-          ? { description: null, ...comment }
-          : comment,
-      ),
+    const items = paginatedComments.items.map((comment) =>
+      this.isShown(comment, userId)
+        ? comment
+        : { description: null, ...comment },
+    );
+
+    return {
+      ...paginatedComments,
+      items,
     };
-    return res;
   }
 
   /**
@@ -89,14 +90,15 @@ export class CommentService {
     const comment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
+
     if (!comment)
       throw new BadRequestException(`Can not find comment by id ${commentId}`);
-    if (user.id !== comment.author.id)
+
+    if (user.id !== comment.authorId)
       throw new BadRequestException(
         `Can not delete comment by user ${user.username}`,
       );
 
-    const result = await this.commentRepository.softDelete(comment.id);
-    return result;
+    return await this.commentRepository.softDelete(comment.id);
   }
 }
