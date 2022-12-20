@@ -42,14 +42,14 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
 
-  @Put()
+  @Post('/update')
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   updateUser(@Body() updateUserDto: UpdateUserDto, @Req() req) {
     return this.userService.updateUser(req.user, updateUserDto);
   }
 
-  @Delete()
+  @Post('/delete')
   @UseGuards(JwtAuthGuard)
   deleteUser(@Req() req) {
     return this.userService.deleteUser(req.user);
