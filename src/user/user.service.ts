@@ -1,3 +1,9 @@
+import {
+  IPaginationMeta,
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -77,8 +83,15 @@ export class UserService {
     return 'Success to delete User';
   }
 
-  async getAllComments(authorId: string): Promise<Comment[]> {
-    const comments = await this.commentRepository.find({ where: { authorId } });
-    return comments;
+  async getAllComments(
+    authorId: string,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Comment, IPaginationMeta>> {
+    const queryBulder = this.commentRepository
+      .createQueryBuilder('comment')
+      .where('comment.authorId = :authorId', { authorId })
+      .orderBy('comment.createdAt', 'DESC');
+
+    return await paginate<Comment>(queryBulder, options);
   }
 }

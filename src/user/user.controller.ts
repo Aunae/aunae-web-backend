@@ -20,6 +20,10 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Query } from '@nestjs/common/decorators';
+import { DefaultValuePipe, ParseIntPipe } from '@nestjs/common/pipes';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
+import { Comment } from 'src/comment/entities/comment.entities';
 
 @Controller('user')
 @ApiTags('유저 API')
@@ -80,7 +84,12 @@ export class UserController {
     description: '유저가 작성한 댓글들을 가져온다.',
   })
   @UseGuards(JwtAuthGuard)
-  getAllComments(@GetUser() user: User) {
-    return this.userService.getAllComments(user.id);
+  getAllComments(
+    @GetUser() user: User,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 20,
+  ): Promise<Pagination<Comment, IPaginationMeta>> {
+    limit = limit > 100 ? 100 : limit;
+    return this.userService.getAllComments(user.id, { page, limit });
   }
 }
