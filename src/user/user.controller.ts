@@ -19,30 +19,45 @@ import { GetUser } from './decorators/user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags('유저 API')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
+  @ApiOperation({
+    summary: '유저 profile 가져오기',
+    description: '유저 정보를 가져온다',
+  })
   @UseGuards(JwtAuthGuard)
   getUser(@Req() req) {
     return this.userService.getUser(req.user.id);
   }
 
   @Get('search/:email')
+  @ApiOperation({
+    summary: 'email로 유저 profile 가져오기',
+    description: 'email로 유저 정보를 가져온다',
+  })
   searchUser(@Param('email') email: string) {
     return this.userService.findUser({ email });
   }
 
   @Post()
   @UsePipes(ValidationPipe)
+  @ApiOperation({ summary: '유저 생성하기', description: '유저를 생성한다.' })
   @UseInterceptors(ClassSerializerInterceptor)
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
   }
 
   @Post('/update')
+  @ApiOperation({
+    summary: '유저 정보 수정하기',
+    description: '유저 정보를 수정한다',
+  })
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   updateUser(@Body() updateUserDto: UpdateUserDto, @Req() req) {
@@ -50,12 +65,20 @@ export class UserController {
   }
 
   @Post('/delete')
+  @ApiOperation({
+    summary: '유저 정보 삭제하기',
+    description: '유저 정보를 삭제한다',
+  })
   @UseGuards(JwtAuthGuard)
   deleteUser(@Req() req) {
     return this.userService.deleteUser(req.user);
   }
 
   @Get('/comment')
+  @ApiOperation({
+    summary: '유저 댓글 가져오기',
+    description: '유저가 작성한 댓글들을 가져온다.',
+  })
   @UseGuards(JwtAuthGuard)
   getAllComments(@GetUser() user: User) {
     return this.userService.getAllComments(user.id);
