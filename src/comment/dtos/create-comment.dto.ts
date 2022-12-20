@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
-import { IsNull } from 'typeorm';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { COMMENT_STATUS } from '../types/comment.type';
 
 export class CreateCommentDto {

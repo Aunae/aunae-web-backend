@@ -1,7 +1,5 @@
 import { BoardService } from './../board/board.service';
 import { COMMENT_STATUS } from './types/comment.type';
-import { UpdateCommentDto } from './dtos/update-comment.dto';
-import { UserService } from '../user/user.service';
 import { CreateCommentDto } from './dtos/create-comment.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,9 +7,7 @@ import { User } from 'src/user/entities/user.entities';
 import { Repository, UpdateResult } from 'typeorm';
 import { ResponseCommentDto } from './dtos/response-comment.dto';
 import { Comment } from './entities/comment.entities';
-import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { Board } from 'src/board/entities/board.entities';
-import { isNotEmpty } from 'class-validator';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CommentService {
@@ -19,6 +15,7 @@ export class CommentService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     private boardService: BoardService,
   ) {}
+
   /**
    *
    * @param commentId id of comment
@@ -32,13 +29,19 @@ export class CommentService {
     const comment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
-    if (
-      comment.status === COMMENT_STATUS.PRIVATE &&
-      userId !== comment.author.id
-    ) {
+
+    const isShown = this.isShown(comment, userId);
+    if (!isShown) {
       comment.description = null;
     }
+
     return comment;
+  }
+
+  private isShown(comment: Comment, userId: string) {
+    return (
+      comment.status === COMMENT_STATUS.PUBLIC || userId === comment.authorId
+    );
   }
 
   async createComment(userId: string, dto: CreateCommentDto): Promise<Comment> {
@@ -55,25 +58,31 @@ export class CommentService {
     boardId: number,
     options: IPaginationOptions,
   ) {
-    const comments = await this.commentRepository
+    const queryBuilder = this.commentRepository
       .createQueryBuilder('comment')
       .where(`comment.boardId = :boardId`, { boardId })
       .orderBy('comment.createdAt', 'DESC');
 
-    const data = await paginate<Comment>(comments, options);
+    const paginatedComments = await paginate<Comment>(queryBuilder, options);
 
     const board = await this.boardService.getBoardById(boardId);
-    if (board.authorId == userId) return data;
+    const isAuthor = this.isAuthor(userId, board.authorId);
+    if (isAuthor) return paginatedComments;
 
-    const res = {
-      ...data,
-      items: data.items.map((comment) =>
-        comment.status === COMMENT_STATUS.PRIVATE && comment.authorId !== userId
-          ? { description: null, ...comment }
-          : comment,
-      ),
+    const items = paginatedComments.items.map((comment) =>
+      this.isShown(comment, userId)
+        ? comment
+        : { description: null, ...comment },
+    );
+
+    return {
+      ...paginatedComments,
+      items,
     };
-    return res;
+  }
+
+  private isAuthor(userId: string, authorId: string) {
+    return userId === authorId;
   }
 
   /**
@@ -86,14 +95,16 @@ export class CommentService {
     const comment = await this.commentRepository.findOne({
       where: { id: commentId },
     });
+
     if (!comment)
       throw new BadRequestException(`Can not find comment by id ${commentId}`);
-    if (user.id !== comment.author.id)
+
+    const isAuthor = this.isAuthor(user.id, comment.authorId);
+    if (!isAuthor)
       throw new BadRequestException(
         `Can not delete comment by user ${user.username}`,
       );
 
-    const result = await this.commentRepository.softDelete(comment.id);
-    return result;
+    return await this.commentRepository.softDelete(comment.id);
   }
 }
